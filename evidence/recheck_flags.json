@@ -1,0 +1,216 @@
+{
+  "_comment": [
+    "Derived from extras/verification_manifest.jsonl as published with the dataset.",
+    "It records every verified row that does NOT come back clean when the original",
+    "checker is re-run over the published parquet. verify.py re-downloads the manifest,",
+    "re-derives this file from it, and fails if the two disagree.",
+    "Regenerate with: python derive_recheck_flags.py"
+  ],
+  "manifest": {
+    "path": "extras/verification_manifest.jsonl",
+    "bytes": 7127921,
+    "sha256": "034f1b7e61342b9e043a21296dcd5b774ca40f5de0463e3e0d34ee77e39bd3e8",
+    "entries": 13260
+  },
+  "totals": {
+    "verified_rows": 13260,
+    "reproduce_clean": 13239,
+    "flagged": 21,
+    "deterministic_failures": 10,
+    "flaky": 11
+  },
+  "by_domain": {
+    "math": 9,
+    "code": 12
+  },
+  "reasons": [
+    {
+      "note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others",
+      "rows": [
+        1917,
+        2229,
+        2719,
+        4960,
+        8393,
+        8417,
+        9712,
+        11357,
+        11382,
+        15073,
+        15272
+      ],
+      "count": 11
+    },
+    {
+      "note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string.",
+      "rows": [
+        1007,
+        3073,
+        6620,
+        9369,
+        12341,
+        12448,
+        13733,
+        13926,
+        15312
+      ],
+      "count": 9
+    },
+    {
+      "note": "all ten upstream asserts fail deterministically on re-execution in a current Python",
+      "rows": [
+        2364
+      ],
+      "count": 1
+    }
+  ],
+  "rows": [
+    {
+      "row": 1007,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 1917,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 2229,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 2364,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": false,
+      "recheck_note": "all ten upstream asserts fail deterministically on re-execution in a current Python"
+    },
+    {
+      "row": 2719,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 3073,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 4960,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 6620,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 8393,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 8417,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 9369,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 9712,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 11357,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 11382,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 12341,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 12448,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 13733,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 13926,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    },
+    {
+      "row": 15073,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 15272,
+      "domain": "code",
+      "source": "OpenCodeInstruct",
+      "reproduces_on_recheck": "flaky",
+      "recheck_note": "upstream unit test is nondeterministic: observed failing on at least one of three re-runs and passing on the others"
+    },
+    {
+      "row": 15312,
+      "domain": "math",
+      "source": "OpenMathReasoning",
+      "reproduces_on_recheck": false,
+      "recheck_note": "stored gold and boxed answer differ only in LaTeX inline-math delimiters; verify_core.normalize does not strip them, so this row fails the re-check every time. Same value, different string."
+    }
+  ]
+}

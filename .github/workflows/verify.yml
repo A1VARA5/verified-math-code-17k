@@ -1,0 +1,35 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # 06:40 UTC daily, so the badge reflects whether the published artifacts still
+    # resolve, not only whether they resolved on the day I pushed.
+    - cron: "40 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # No pip install anywhere in this workflow. verify.py is standard library only,
+      # which is the whole point: a stranger can run it without trusting a dependency
+      # tree either, and this job cannot rot when a package moves.
+      - name: local checks
+        run: python verify.py --offline
+
+      - name: local and network checks
+        run: python verify.py --timeout 90

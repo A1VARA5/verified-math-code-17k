@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+# build working directories, see PIPELINE.md
+data/
+pools/
+pools_hardened/
+pools_expanded/
+dataset/
+# artifacts verify.py and verify_published.py download at runtime
+*.parquet
+*.jsonl
+!evidence/*.jsonl

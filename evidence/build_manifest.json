@@ -1,0 +1,36 @@
+{
+  "total": 17000,
+  "by_domain": {
+    "code": 4156,
+    "math": 9104,
+    "general": 3740
+  },
+  "by_verify_level": {
+    "executed": 4156,
+    "independent": 9104,
+    "-": 3740
+  },
+  "by_difficulty": {
+    "medium": 7018,
+    "hard": 6242,
+    "-": 3740
+  },
+  "by_source": {
+    "OpenCodeInstruct": 3770,
+    "OpenMathReasoning": 4380,
+    "OpenR1-Math": 1476,
+    "code_contests": 386,
+    "Tulu-3": 3108,
+    "OpenMathInstruct-2": 3248,
+    "Dolly-15k": 632
+  },
+  "math_with_boxed_final_answer": "9104/9104",
+  "math_boxed_pct": 100.0,
+  "decontaminated_against": [
+    "GSM8K-test(1319)",
+    "MBPP-test(500)",
+    "HumanEval(164)"
+  ],
+  "near_dup_threshold": 0.6,
+  "output_contract": "math ends with 'The final answer is $\\boxed{...}$.'; code returns a fenced python block"
+}

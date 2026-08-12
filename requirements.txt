@@ -1,0 +1,20 @@
+# verify.py needs NOTHING from this file. It is standard library only, on purpose, so anyone
+# can check every claim in the README with a bare Python 3.9+ and no install step.
+#
+#     python verify.py
+#
+# derive_recheck_flags.py is standard library only as well.
+#
+# Everything below is for re-running the build pipeline in pipeline/.
+
+# math answer equivalence, tier 3: symbolic comparison (pipeline/verify_core.py)
+sympy>=1.12
+
+# near-duplicate removal at assembly, MinHashLSH over word 5-grams (pipeline/assemble_v3.py)
+datasketch>=1.6
+
+# reading the published parquet for the third-party re-check (pipeline/verify_published.py)
+pyarrow>=15.0
+
+# pulling the seven upstream corpora into data/ before stage 1, see PIPELINE.md
+datasets>=2.18

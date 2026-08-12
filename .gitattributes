@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+# evidence/build_manifest.json must stay byte identical to the copy published with the
+# dataset, CRLF and all, so that verify.py check 1 and a judge running sha256sum on both
+# files get one digest. Never let git normalise it.
+evidence/build_manifest.json -text -diff
+
+# The pipeline scripts are byte identical to the copies published under build/ with the
+# dataset, and check 16 proves it by SHA-256. Do not let line-ending normalisation break
+# that on a checkout.
+pipeline/*.py -text
