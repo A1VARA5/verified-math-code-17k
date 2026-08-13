@@ -148,7 +148,13 @@ def expect(condition, message):
         raise AssertionError(message)
 
 
-def fetch(url, headers=None, retries=3, method="GET"):
+# The Hub answers 500 or 503 while it warms a cache or builds a query index, which is a
+# transient condition and not a failed claim. Retry those rather than let the daily badge
+# flap on someone else's cold start. A 404 or a 403 is a real answer and is returned as is.
+RETRYABLE = (429, 500, 502, 503, 504)
+
+
+def fetch(url, headers=None, retries=4, method="GET"):
     """GET a URL, returning (status, headers, body). Retries transient failures."""
     last = None
     hdrs = dict(UA)
@@ -160,6 +166,10 @@ def fetch(url, headers=None, retries=3, method="GET"):
             with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
                 return resp.status, dict(resp.headers), resp.read()
         except urllib.error.HTTPError as exc:
+            if exc.code in RETRYABLE and attempt < retries - 1:
+                last = exc
+                time.sleep(3 * (attempt + 1))
+                continue
             return exc.code, dict(exc.headers or {}), b""
         except Exception as exc:  # noqa: BLE001
             last = exc
@@ -219,10 +229,18 @@ def column_statistics():
 
 
 def filter_rows(where):
-    """Ask the Hub's own parquet index how many rows satisfy a predicate."""
+    """Ask the Hub's own parquet index how many rows satisfy a predicate.
+
+    Returns None if the filter service is unavailable. It builds a query index on demand
+    and answers 500 while it does, which is a cold start rather than a failed claim.
+    """
     url = (f"{SERVER}/filter?dataset={DATASET_ID}&config=default&split=train"
            f"&where={urllib.parse.quote(where)}&limit=1")
-    return fetch_json(url)["num_rows_total"]
+    status, _, body = fetch(url)
+    if status in RETRYABLE:
+        return None
+    expect(status == 200, f"{url} returned HTTP {status}")
+    return json.loads(body.decode("utf-8"))["num_rows_total"]
 
 
 def derive_recheck(raw):
@@ -394,13 +412,23 @@ def c_source_column_values():
 def c_share_alike_filter():
     dolly = filter_rows(f"\"source\"='{SHARE_ALIKE_SOURCE}'")
     rest = filter_rows(f"\"source\"!='{SHARE_ALIKE_SOURCE}'")
+    if dolly is None or rest is None:
+        # The filter service is cold. Fall back to the parquet index's own value counts,
+        # which is still a live measurement of the published file, just a different route
+        # to it. The claim is not taken on trust either way.
+        freq = column_statistics()["source"]["column_statistics"]["frequencies"]
+        dolly = freq[SHARE_ALIKE_SOURCE]
+        rest = sum(v for k, v in freq.items() if k != SHARE_ALIKE_SOURCE)
+        route = "value counts from the parquet index, filter service was warming"
+    else:
+        route = "SQL filter run over the published parquet"
     expect(dolly == SHARE_ALIKE_ROWS,
-           f"filter finds {dolly} {SHARE_ALIKE_SOURCE} rows, expected {SHARE_ALIKE_ROWS}")
+           f"found {dolly} {SHARE_ALIKE_SOURCE} rows, expected {SHARE_ALIKE_ROWS}")
     expect(rest == ATTRIBUTION_ONLY_ROWS,
-           f"filter leaves {rest} rows, expected {ATTRIBUTION_ONLY_ROWS}")
+           f"filtering leaves {rest} rows, expected {ATTRIBUTION_ONLY_ROWS}")
     expect(dolly + rest == ROWS, f"{dolly} + {rest} != {ROWS}")
-    return (f"source == '{SHARE_ALIKE_SOURCE}' matches {dolly} rows; filtering them out "
-            f"leaves exactly {rest:,}, run against the published parquet not this README")
+    return (f"source == '{SHARE_ALIKE_SOURCE}' matches {dolly} rows; dropping them leaves "
+            f"exactly {rest:,} ({route})")
 
 
 def c_manifest_downloads():
